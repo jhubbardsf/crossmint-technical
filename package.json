@@ -1,0 +1,11 @@
+{
+  "name": "crossmint",
+  "module": "index.ts",
+  "scripts": {
+    "create-cross": "bun src/createCross.ts"
+  },
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "^1.1.24"
+  }
+}
