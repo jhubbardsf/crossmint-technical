@@ -1,6 +1,6 @@
 import api from "@services/api";
 import { Colors, Directions, GoalMap } from "@models/polyanet.model";
-
+type Route = "polyanets" | "soloons" | "comeths";
 export class MegaverseBuilder {
 	private baseUrl: string;
 	private candidateId: string;
@@ -10,12 +10,15 @@ export class MegaverseBuilder {
 		this.candidateId = candidateId;
 	}
 
-	async buildMegaverse(goalMap: GoalMap): Promise<void> {
+	async buildMegaverse(
+		goalMap: GoalMap,
+		opts = { destroy: false }
+	): Promise<void> {
 		for (let row = 0; row < goalMap.length; row++) {
 			for (let column = 0; column < goalMap[row].length; column++) {
 				const cell = goalMap[row][column];
 				if (cell !== "SPACE") {
-					await this.createEntity(cell, row, column);
+					await this.createEntity(cell, row, column, opts);
 				}
 			}
 		}
@@ -23,93 +26,52 @@ export class MegaverseBuilder {
 		console.log("Megaverse built successfully!");
 	}
 
-	async deleteMegaverse(goalMap: GoalMap): Promise<void> {
-		for (let row = 0; row < goalMap.length; row++) {
-			for (let column = 0; column < goalMap[row].length; column++) {
-				const cell = goalMap[row][column];
-				if (cell !== "SPACE") {
-					await this.deleteEntity(cell, row, column);
-				}
-			}
-		}
-
-		console.log("Megaverse deleted successfully!");
-	}
-
-	private async deleteEntity(
-		entity: string,
-		row: number,
-		column: number
-	): Promise<void> {
-		const [type, _attribute] = entity.toLowerCase().split("_");
-		const params = { row, column, candidateId: this.candidateId };
-
-		console.log("Debug: ", { type, _attribute, row, column });
-
-		switch (type) {
-			case "polyanet":
-				await this.sendRequest("polyanets", params, true);
-				break;
-			case "soloon":
-				await this.sendRequest(
-					"soloons",
-					{
-						...params,
-						color: _attribute as Colors,
-					},
-					true
-				);
-				break;
-			case "cometh":
-				await this.sendRequest(
-					"comeths",
-					{
-						...params,
-						direction: _attribute as Directions,
-					},
-					true
-				);
-				break;
-			default:
-				console.warn(`Unknown entity type: ${type}`);
-		}
-	}
-
 	private async createEntity(
 		entity: string,
 		row: number,
-		column: number
+		column: number,
+		opts: { destroy: boolean } = { destroy: false }
 	): Promise<void> {
 		const [attribute, type] = entity.toLowerCase().split("_");
 		const params = { row, column, candidateId: this.candidateId };
 
 		console.log("Debug: ", { type, attribute, row, column });
 
-		switch (type) {
-			case "polyanet":
-				await this.sendRequest("polyanets", params);
+		type PayloadBase = { row: number; column: number; candidateId: string };
+		type SoloonPayload = PayloadBase & { color: Colors };
+		type ComethPayload = PayloadBase & { direction: Directions };
+
+		const route = this.entityToRoute(entity);
+		let payload: PayloadBase | SoloonPayload | ComethPayload | undefined;
+		switch (route) {
+			case "polyanets":
+				payload = params;
 				break;
-			case "soloon":
-				await this.sendRequest("soloons", {
-					...params,
-					color: attribute as Colors,
-				});
+			case "soloons":
+				payload = { ...params, color: attribute as Colors };
 				break;
-			case "cometh":
-				await this.sendRequest("comeths", {
-					...params,
-					direction: attribute as Directions,
-				});
+			case "comeths":
+				payload = { ...params, direction: attribute as Directions };
 				break;
 			default:
 				console.warn(`Unknown entity type: ${type}`);
 		}
+
+		if (route && payload) {
+			await this.sendRequest(route, payload, opts.destroy);
+		}
+	}
+
+	private entityToRoute(entity: string): Route | undefined {
+		if (entity.includes("POLYANET")) return "polyanets";
+		if (entity.includes("SOLOON")) return "soloons";
+		if (entity.includes("COMETH")) return "comeths";
 	}
 
 	private async sendRequest(
-		endpoint: string,
+		endpoint: Route,
 		params: any,
-		destroy = false
+		destroy: boolean
 	): Promise<void> {
 		const url = `${this.baseUrl}/${endpoint}`;
 		const payload = { json: params };

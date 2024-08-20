@@ -1,4 +1,4 @@
-import { goal } from "./goalPhase1.json";
+import { goal } from "./goalPhase2.json";
 import { config } from "@config/config";
 import { MegaverseBuilder } from "@services/api.service";
 import { GoalMap } from "@models/polyanet.model";
@@ -12,7 +12,7 @@ async function main() {
 	const goalMap: GoalMap = goal;
 
 	try {
-		await builder.deleteMegaverse(goalMap);
+		await builder.buildMegaverse(goalMap, { destroy: true });
 	} catch (error) {
 		console.error("Failed to build Megaverse:", error);
 	}

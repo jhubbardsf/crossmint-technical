@@ -24,7 +24,6 @@ const defaultOptions: StrictRetryOptions = {
 			(request, options) => {
 				console.log(`Sending ${request.method} request to ${request.url}`);
 				console.log(`Body: `, options.body);
-				console.log({ options });
 				return request;
 			},
 		],
