@@ -1,11 +1,17 @@
 {
-  "name": "crossmint",
-  "module": "index.ts",
-  "scripts": {
-    "create-cross": "bun src/createCross.ts"
-  },
-  "type": "module",
-  "devDependencies": {
-    "bun-types": "^1.1.24"
-  }
+	"name": "crossmint",
+	"module": "index.ts",
+	"scripts": {
+		"create-cross": "node --loader ts-node/esm src/createCross.ts"
+	},
+	"type": "module",
+	"devDependencies": {
+		"bun-types": "^1.1.24",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.4"
+	},
+	"dependencies": {
+		"ky": "^1.7.0",
+		"tsc": "^2.0.4"
+	}
 }
