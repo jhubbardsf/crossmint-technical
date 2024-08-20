@@ -1,6 +1,8 @@
 export type Colors = "blue" | "red" | "purple" | "white";
 export type Directions = "up" | "down" | "left" | "right";
-export type GoalMap = string[][];
+type MapOptions = "SPACE" | "POLYANET" | "SOLOONS" | "COMETHS";
+export type GoalMap = MapOptions[][];
+export type TRoute = "polyanets" | "soloons" | "comeths";
 
 interface Shape {
 	row: number;

@@ -2,7 +2,7 @@
 	"name": "crossmint",
 	"module": "index.ts",
 	"scripts": {
-		"start": "bun src/createMegaverse.ts"
+		"start": "bun src/entry.ts"
 	},
 	"type": "module",
 	"devDependencies": {

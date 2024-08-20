@@ -2,18 +2,18 @@ import ky, { HTTPError, Options as KyOptions } from "ky";
 
 const startTime = Bun.nanoseconds();
 const getUptime = () => (Bun.nanoseconds() - startTime) / 1e9;
+const MAX_BACKOFF = 3000; // 3 seconds
 
 const defaultOptions: KyOptions = {
 	retry: {
 		limit: 50, // 50 retry limit
 		methods: ["get", "post", "put", "delete", "patch"],
 		statusCodes: [408, 413, 429, 500, 502, 503, 504],
-		backoffLimit: 3000, // 2 seconds
+		backoffLimit: MAX_BACKOFF,
 		maxRetryAfter: 600000, // 10 minutes
 	},
 	hooks: {
 		beforeRequest: [
-			// options
 			(request, options) => {
 				const uptime = getUptime().toFixed(3);
 				console.log(
@@ -31,9 +31,12 @@ const defaultOptions: KyOptions = {
 			},
 		],
 		beforeRetry: [
-			async ({ request, options, error, retryCount }) => {
+			async ({ error, retryCount }) => {
 				const uptime = getUptime().toFixed(3);
-				const estimatedDelay = 0.3 * 2 ** (retryCount - 1) * 1000;
+				const estimatedDelay = Math.min(
+					MAX_BACKOFF,
+					0.3 * 2 ** (retryCount - 1) * 1000
+				);
 				console.log(
 					`[${uptime}s] retryCount: ${retryCount}, estimatedDelay: ${estimatedDelay}`
 				);

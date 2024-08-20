@@ -1,8 +1,8 @@
-import { goal } from "./goalPhase2.json";
 import { config } from "@config/config";
-import { MegaverseBuilder } from "@services/api.service";
+import { MegaverseBuilder } from "@/services/builder.service";
 import { GoalMap } from "@models/polyanet.model";
 import { parseArgs } from "util";
+import { GoalUtil } from "@utils/goal.util";
 
 interface CLIOptions {
 	destroy: boolean;
@@ -34,9 +34,10 @@ async function main() {
 		return;
 	}
 	const builder = new MegaverseBuilder(config.apiUrl, config.candidateId);
-	const goalMap: GoalMap = goal;
+	const goalUtil = new GoalUtil(config.apiUrl);
 
 	try {
+		const goalMap: GoalMap = await goalUtil.fetchGoalMap();
 		await builder.buildMegaverse(goalMap, options);
 	} catch (error) {
 		console.error("Failed to build Megaverse:", error);
