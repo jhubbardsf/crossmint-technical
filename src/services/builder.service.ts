@@ -5,37 +5,35 @@ import type { GoalMap, TRoute } from "@models/types";
 export class MegaverseBuilder {
 	private baseUrl: string;
 	private candidateId: string;
+	private destroying: boolean;
 
-	constructor(baseUrl: string, candidateId: string) {
+	constructor(baseUrl: string, candidateId: string, destroying = false) {
 		this.baseUrl = baseUrl;
 		this.candidateId = candidateId;
+		this.destroying = destroying;
 	}
 
-	async buildMegaverse(
-		goalMap: GoalMap,
-		opts = { destroy: false }
-	): Promise<void> {
-		console.log(`${opts.destroy ? "Destroying" : "Building"} Megaverse...`);
+	async buildMegaverse(goalMap: GoalMap): Promise<void> {
+		console.log(`${this.destroying ? "Destroying" : "Building"} Megaverse...`);
 
 		for (let row = 0; row < goalMap.length; row++) {
 			for (let column = 0; column < goalMap[row].length; column++) {
 				const cell = goalMap[row][column];
 				if (cell !== "SPACE") {
-					await this.createEntity(cell, row, column, opts);
+					await this.createEntity(cell, row, column);
 				}
 			}
 		}
 
 		console.log(
-			`Megaverse ${opts.destroy ? "destroyed" : "built"} successfully!`
+			`Megaverse ${this.destroying ? "destroyed" : "built"} successfully!`
 		);
 	}
 
 	private async createEntity(
 		entity: string,
 		row: number,
-		column: number,
-		opts: { destroy: boolean } = { destroy: false }
+		column: number
 	): Promise<void> {
 		type PayloadBase = { row: number; column: number; candidateId: string };
 		type SoloonPayload = PayloadBase & { color: Colors };
@@ -62,7 +60,7 @@ export class MegaverseBuilder {
 		}
 
 		if (route && payload) {
-			await this.sendRequest(route, payload, opts.destroy);
+			await this.sendRequest(route, payload);
 		}
 	}
 
@@ -72,14 +70,10 @@ export class MegaverseBuilder {
 		if (entity.includes("COMETH")) return "comeths";
 	}
 
-	private async sendRequest(
-		endpoint: TRoute,
-		params: any,
-		destroy: boolean
-	): Promise<void> {
+	private async sendRequest(endpoint: TRoute, params: any): Promise<void> {
 		const url = `${this.baseUrl}/${endpoint}`;
 		const payload = { json: params };
-		const fn = destroy ? api.delete : api.post;
+		const fn = this.destroying ? api.delete : api.post;
 
 		try {
 			await fn(url, payload);

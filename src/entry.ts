@@ -33,12 +33,16 @@ async function main() {
 		console.error("API URL or Candidate ID is missing in the configuration");
 		return;
 	}
-	const builder = new MegaverseBuilder(config.apiUrl, config.candidateId);
+	const builder = new MegaverseBuilder(
+		config.apiUrl,
+		config.candidateId,
+		options.destroy
+	);
 	const goalUtil = new GoalUtil(config.apiUrl);
 
 	try {
-		const goalMap: GoalMap = await goalUtil.fetchGoalMap();
-		await builder.buildMegaverse(goalMap, options);
+		const goalMap = await goalUtil.fetchGoalMap();
+		await builder.buildMegaverse(goalMap);
 	} catch (error) {
 		console.error("Failed to build Megaverse:", error);
 	}

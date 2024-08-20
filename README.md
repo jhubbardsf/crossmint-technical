@@ -39,8 +39,6 @@
   <p align="center">
     Technical takehome for Crossmint.io
     <br />
-    <a href="https://github.com/jhubbardsf/crossmint-technical"><strong>Explore the docs »</strong></a>
-    <br />
     <br />
     <a href="https://github.com/jhubbardsf/crossmint-technical">View Demo</a>
     ·
@@ -71,10 +69,7 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -83,11 +78,12 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![Product Name Screen Shot][product-screenshot]
+![Goal Map][goalmap-screenshot]
 
 This is a command line tool to build out the Crossmint Technical Challenge
-Megaverse according to the phase goal the candidate is currently in. It can
-populate your map according to the goal map and also estroy the goal map incase
+Megaverse according outlined in the goal for the phase that the candidate is currently in. It will
+populate your map automatically from the goal map and can also destroy the map incase
 you want to test building it up and down (note: it will only delete objects that
 were placed there according to the goal map).
 
@@ -115,6 +111,8 @@ To get a local copy up and running follow these simple example steps.
   ```sh
   npm install -g bun
   ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Installation
 
@@ -205,6 +203,7 @@ Project Link: [https://github.com/jhubbardsf/crossmint-technical](https://github
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/jhubbardsf
 [product-screenshot]: images/commandline.png
+[goalmap-screenshot]: images/megaverse.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
