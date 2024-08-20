@@ -1,9 +1,16 @@
 {
-	"name": "crossmint",
-	"module": "index.ts",
+	"name": "crossmint-technical",
+	"version": "1.0.0",
+	"description": "Technical challenge for Crossmint.io",
+	"author": "Josh Hubbard <josh@joshuahubbard.dev>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jhubbardsf/crossmint-technical"
+	},
 	"scripts": {
 		"start": "bun src/entry.ts"
 	},
+	"module": "src/entry.ts",
 	"type": "module",
 	"devDependencies": {
 		"bun-types": "^1.1.24",
