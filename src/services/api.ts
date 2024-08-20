@@ -20,8 +20,11 @@ const defaultOptions: StrictRetryOptions = {
 	},
 	hooks: {
 		beforeRequest: [
-			(request) => {
+			// options
+			(request, options) => {
 				console.log(`Sending ${request.method} request to ${request.url}`);
+				console.log(`Body: `, options.body);
+				console.log({ options });
 				return request;
 			},
 		],

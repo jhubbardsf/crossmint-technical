@@ -1,6 +1,4 @@
-import api from "./api";
-import { config } from "@config/config";
-import { HTTPError } from "ky";
+import api from "@services/api";
 import { Colors, Directions, GoalMap } from "@models/polyanet.model";
 
 export class MegaverseBuilder {
@@ -13,18 +11,15 @@ export class MegaverseBuilder {
 	}
 
 	async buildMegaverse(goalMap: GoalMap): Promise<void> {
-		const promises: Promise<void>[] = [];
-
 		for (let row = 0; row < goalMap.length; row++) {
 			for (let column = 0; column < goalMap[row].length; column++) {
 				const cell = goalMap[row][column];
 				if (cell !== "SPACE") {
-					promises.push(this.createEntity(cell, row, column));
+					await this.createEntity(cell, row, column);
 				}
 			}
 		}
 
-		await Promise.all(promises);
 		console.log("Megaverse built successfully!");
 	}
 
@@ -35,6 +30,8 @@ export class MegaverseBuilder {
 	): Promise<void> {
 		const [type, attribute] = entity.toLowerCase().split("_");
 		const params = { row, column, candidateId: this.candidateId };
+
+		console.log("Debug: ", { type, attribute, row, column });
 
 		switch (type) {
 			case "polyanet":
@@ -59,49 +56,15 @@ export class MegaverseBuilder {
 
 	private async sendRequest(endpoint: string, params: any): Promise<void> {
 		try {
-			await api.post(`${this.baseUrl}/${endpoint}`, params);
+			console.log("Inside sendRequest (Params): ", params);
+			console.log("About to send to: ", `${this.baseUrl}/${endpoint}`);
+			await api.post(`${this.baseUrl}/${endpoint}`, { json: params });
 		} catch (error) {
 			console.error(
 				`Error creating ${endpoint} at (${params.row}, ${params.column}):`,
 				error
 			);
-			throw error;
+			// throw error;
 		}
 	}
 }
-
-// export class ApiService {
-// 	private baseUrl: string;
-
-// 	constructor() {
-// 		this.baseUrl = config.apiUrl;
-// 	}
-
-// 	async createPolyanet(row: number, column: number): Promise<void> {
-// 		try {
-// 			console.log(`Creating  R${row}C${column}`);
-// 			const url = `${this.baseUrl}/polyanets`;
-// 			const payload = {
-// 				row,
-// 				column,
-// 				candidateId: config.candidateId,
-// 			};
-// 			console.log({ url, payload });
-
-// 			await api.post(url, {
-// 				json: payload,
-// 			});
-// 		} catch (error) {
-// 			if (error instanceof HTTPError) {
-// 				console.error(
-// 					`HTTP Error creating POLYanet at (${row}, ${column}):`,
-// 					error.response.status,
-// 					await error.response.text()
-// 				);
-// 			} else {
-// 				console.error(`Error creating POLYanet at (${row}, ${column}):`, error);
-// 			}
-// 			throw error;
-// 		}
-// 	}
-// }

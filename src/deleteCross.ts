@@ -1,23 +1,21 @@
-import api from "@services/api";
+import { goal } from "./goalPhase1.json";
+import { config } from "@config/config";
+import { MegaverseBuilder } from "@services/api.service";
+import { GoalMap } from "@models/polyanet.model";
 
-for (let i = 0; i < 10; i++) {
-	for (let j = 0; j < 10; j++) {
-		try {
-			console.log(`Deleting R${i}C${j}`);
-			await api.delete("https://challenge.crossmint.io/api/polyanets", {
-				json: {
-					row: i,
-					column: j,
-					candidateId: process.env.CANDIDATE_ID,
-				},
-			});
-			console.log(`Successfully deleted R${i}C${j}`);
-		} catch (error) {
-			if (error instanceof Error) {
-				console.error(`Error deleting R${i}C${j}:`, error.message);
-			} else {
-				console.error(`Unknown error deleting R${i}C${j}`);
-			}
-		}
+async function main() {
+	if (!config.apiUrl || !config.candidateId) {
+		console.error("API URL or Candidate ID is missing in the configuration");
+		return;
+	}
+	const builder = new MegaverseBuilder(config.apiUrl, config.candidateId);
+	const goalMap: GoalMap = goal;
+
+	try {
+		await builder.buildMegaverse(goalMap);
+	} catch (error) {
+		console.error("Failed to build Megaverse:", error);
 	}
 }
+
+await main();
