@@ -2,7 +2,7 @@
 	"name": "crossmint",
 	"module": "index.ts",
 	"scripts": {
-		"create-cross": "node --loader ts-node/esm src/createCross.ts"
+		"start": "bun src/createMegaverse.ts"
 	},
 	"type": "module",
 	"devDependencies": {

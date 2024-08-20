@@ -14,6 +14,7 @@ export class MegaverseBuilder {
 		goalMap: GoalMap,
 		opts = { destroy: false }
 	): Promise<void> {
+		console.log(`${opts.destroy ? "Destroying" : "Building"} Megaverse...`);
 		for (let row = 0; row < goalMap.length; row++) {
 			for (let column = 0; column < goalMap[row].length; column++) {
 				const cell = goalMap[row][column];
@@ -23,7 +24,9 @@ export class MegaverseBuilder {
 			}
 		}
 
-		console.log("Megaverse built successfully!");
+		console.log(
+			`Megaverse ${opts.destroy ? "destroyed" : "built"} successfully!`
+		);
 	}
 
 	private async createEntity(
@@ -34,8 +37,6 @@ export class MegaverseBuilder {
 	): Promise<void> {
 		const [attribute, type] = entity.toLowerCase().split("_");
 		const params = { row, column, candidateId: this.candidateId };
-
-		console.log("Debug: ", { type, attribute, row, column });
 
 		type PayloadBase = { row: number; column: number; candidateId: string };
 		type SoloonPayload = PayloadBase & { color: Colors };
@@ -77,8 +78,6 @@ export class MegaverseBuilder {
 		const payload = { json: params };
 		const fn = destroy ? api.delete : api.post;
 		try {
-			console.log("Inside sendRequest (Params): ", params);
-			console.log("About to send to: ", `${this.baseUrl}/${endpoint}`);
 			await fn(url, payload);
 		} catch (error) {
 			console.error(

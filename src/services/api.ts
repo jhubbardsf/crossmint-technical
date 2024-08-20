@@ -1,67 +1,52 @@
 import ky, { HTTPError, Options as KyOptions } from "ky";
 
-interface StrictRetryOptions extends KyOptions {
-	retry: {
-		limit: number;
-		methods: string[];
-		statusCodes: number[];
-		backoffLimit: number;
-		maxRetryAfter: number;
-	};
-}
+const startTime = Bun.nanoseconds();
+const getUptime = () => (Bun.nanoseconds() - startTime) / 1e9;
 
-const defaultOptions: StrictRetryOptions = {
+const defaultOptions: KyOptions = {
 	retry: {
-		limit: 5,
+		limit: 50, // 50 retry limit
 		methods: ["get", "post", "put", "delete", "patch"],
 		statusCodes: [408, 413, 429, 500, 502, 503, 504],
-		backoffLimit: 3000,
+		backoffLimit: 3000, // 2 seconds
 		maxRetryAfter: 600000, // 10 minutes
 	},
 	hooks: {
 		beforeRequest: [
 			// options
 			(request, options) => {
-				console.log(`Sending ${request.method} request to ${request.url}`);
-				console.log(`Body: `, options.body);
+				const uptime = getUptime().toFixed(3);
+				console.log(
+					`[${uptime}s] Sending ${request.method} request to ${request.url}`
+				);
+				console.log(`[${uptime}s] Body: `, options.body);
 				return request;
 			},
 		],
 		afterResponse: [
 			(_request, _options, response) => {
-				console.log(`Received ${response.status} response`);
+				const uptime = getUptime().toFixed(3);
+				console.log(`[${uptime}s] Received ${response.status} response`);
 				return response;
 			},
 		],
 		beforeRetry: [
 			async ({ request, options, error, retryCount }) => {
-				const strictOptions = options as StrictRetryOptions;
-				let delay = Math.min(
-					2 ** retryCount * 1000,
-					strictOptions.retry.backoffLimit
+				const uptime = getUptime().toFixed(3);
+				const estimatedDelay = 0.3 * 2 ** (retryCount - 1) * 1000;
+				console.log(
+					`[${uptime}s] retryCount: ${retryCount}, estimatedDelay: ${estimatedDelay}`
 				);
 
 				if (error instanceof HTTPError) {
 					console.error(
-						`HTTP Error ${
+						`[${uptime}s] HTTP Error ${
 							error.response.status
 						}: ${await error.response.text()}`
 					);
-					const retryAfter = error.response.headers.get("Retry-After");
-					if (retryAfter) {
-						const retryAfterMs = Number(retryAfter) * 1000;
-						if (!isNaN(retryAfterMs)) {
-							delay = Math.min(retryAfterMs, strictOptions.retry.maxRetryAfter);
-						}
-					}
 				} else if (error instanceof Error) {
-					console.error(`Network error: ${error.message}`);
+					console.error(`[${uptime}s] Network error: ${error.message}`);
 				}
-
-				console.log(
-					`Retrying request (attempt ${retryCount + 1}) after ${delay}ms`
-				);
-				await new Promise((resolve) => setTimeout(resolve, delay));
 			},
 		],
 	},
