@@ -1,6 +1,6 @@
 import api from "@services/api";
 import { config } from "@config/config";
-import { GoalMap } from "@models/polyanet.model";
+import type { GoalMap } from "@models/types";
 
 export class GoalUtil {
 	private baseUrl: string;

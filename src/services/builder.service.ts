@@ -1,5 +1,6 @@
 import api from "@services/api";
-import { Colors, Directions, GoalMap, TRoute } from "@models/polyanet.model";
+import type { Colors, Directions } from "@models/shapes";
+import type { GoalMap, TRoute } from "@models/types";
 
 export class MegaverseBuilder {
 	private baseUrl: string;

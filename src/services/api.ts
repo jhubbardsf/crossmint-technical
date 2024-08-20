@@ -1,4 +1,4 @@
-import ky, { HTTPError, Options as KyOptions } from "ky";
+import ky, { HTTPError, type Options as KyOptions } from "ky";
 
 const startTime = Bun.nanoseconds();
 const getUptime = () => (Bun.nanoseconds() - startTime) / 1e9;

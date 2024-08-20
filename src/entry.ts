@@ -1,8 +1,8 @@
 import { config } from "@config/config";
-import { MegaverseBuilder } from "@/services/builder.service";
-import { GoalMap } from "@models/polyanet.model";
+import { MegaverseBuilder } from "@services/builder.service";
 import { parseArgs } from "util";
 import { GoalUtil } from "@utils/goal.util";
+import type { GoalMap } from "@models/types";
 
 interface CLIOptions {
 	destroy: boolean;
