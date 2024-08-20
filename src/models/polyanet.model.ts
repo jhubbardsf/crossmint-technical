@@ -1,5 +1,6 @@
-type Colors = "blue" | "red" | "purple" | "white";
-type Directions = "up" | "down" | "left" | "right";
+export type Colors = "blue" | "red" | "purple" | "white";
+export type Directions = "up" | "down" | "left" | "right";
+export type GoalMap = string[][];
 
 interface Shape {
 	row: number;

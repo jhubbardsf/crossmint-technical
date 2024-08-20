@@ -1,4 +1,4 @@
-import { Polyanet } from "../models/polyanet.model";
+import { Polyanet } from "@models/polyanet.model";
 
 export class GridUtil {
 	static generateCrossPositions(size: number): Polyanet[] {
