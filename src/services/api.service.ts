@@ -80,7 +80,7 @@ export class MegaverseBuilder {
 		row: number,
 		column: number
 	): Promise<void> {
-		const [type, attribute] = entity.toLowerCase().split("_");
+		const [attribute, type] = entity.toLowerCase().split("_");
 		const params = { row, column, candidateId: this.candidateId };
 
 		console.log("Debug: ", { type, attribute, row, column });

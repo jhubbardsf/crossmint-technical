@@ -1,4 +1,4 @@
-import { goal } from "./goalPhase1.json";
+import { goal } from "./goalPhase2.json";
 import { config } from "@config/config";
 import { MegaverseBuilder } from "@services/api.service";
 import { GoalMap } from "@models/polyanet.model";
