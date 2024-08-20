@@ -12,7 +12,7 @@ async function main() {
 	const goalMap: GoalMap = goal;
 
 	try {
-		await builder.buildMegaverse(goalMap);
+		await builder.deleteMegaverse(goalMap);
 	} catch (error) {
 		console.error("Failed to build Megaverse:", error);
 	}
